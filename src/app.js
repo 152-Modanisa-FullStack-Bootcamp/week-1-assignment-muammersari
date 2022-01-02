@@ -4,26 +4,49 @@ import axios from "axios";
 axios
   .get("https://my-json-server.typicode.com/modanisatech/bootcamp-db/products")
   .then((response) => {
-    // Firstly, log response to the console,
-    // inspect the response and see that it has data field
+    if (response.status === 200) {
+      // gelen istek 200 Ok ise işlemler yapılacak
+      //gelen liste consola bastırıldı
+      console.log(response);
 
-    // Assign data field of the response to
-    // products variable below by destructuring
-    // You can use alias
-    const products = null;
+      const products = response.data; // gelen liste products nesnesine atandı
 
-    // Print names of all product to the console
-    // by calling foreach  method (use arrow function)
+      //listedeki name değerini toLowerCase ile tüm harfleri küçük yaptık ki büyük küçük harf duyarlılığı olmadan
+      //içerisinde şal kelimesi geçen tüm veriler getirilsin
+      //.match fonksiyonu içierinden şal kelimesi geçen name objelerini bulur.
+      let mappedProducts = products
+        .filter((product) => product.name.toLowerCase().match("şal"))
+        .map((product) => ({
+          //Sadece name ve image bilgilerini içeren json nesnesi türetiyoruz.
+          name: product.name,
+          image: product.image
+        }));
 
-    // Get all products that contain "Şal" in their name (use filter method)
-    // map filtered products to new object having only image and name field
-    // assign mapped items to mappedProducts variable
-    const mappedProducts = null;
+      //filtrelenmiş liste consola bastırıldı
+      console.log(mappedProducts);
 
-    // Display the images and names of mappedProducts
-    // You need to add them to the DOM
-    // you need to use forEach method
-    // You need to use flexbox
-    // Position of image and text is up to you
-    // You can use any style you wish
+      //filtrelenmiş liste tek tek gezilerek ekrana bastrıdıldı
+      mappedProducts.forEach((element) => {
+        // resimlerin ekleneceği div alanı oluşturuldu
+        var listArea = document.createElement("div");
+        listArea.className = "listArea";
+
+        //resim iin img nesnesi oluşturuldu
+        var image = document.createElement("img");
+        image.src = element.image;
+        image.className = "images";
+
+        //açıklama için p nesnesi oluşturuldu
+        var name = document.createElement("p");
+        name.innerText = element.name;
+        name.className = "description";
+
+        //resim ve açıklama alanları div alanına eklendi
+        listArea.append(image);
+        listArea.append(name);
+
+        //div alanı index.html dosyasında ki id si app olan nesnenin içine eklendi
+        document.getElementById("app").append(listArea);
+      });
+    } else console.log("Veri Bulunamadı");
   });
